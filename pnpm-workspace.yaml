@@ -1,3 +1,9 @@
+# The Projects drive is NTFS over FUSE and very slow with many small files,
+# so installed packages live on the local Linux disk; node_modules only holds links.
+storeDir: /home/rashed/.local/share/pnpm/store
+virtualStoreDir: /home/rashed/.cache/scaleforge/vstore
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+onlyBuiltDependencies:
+  - better-sqlite3

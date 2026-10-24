@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# System Sketch Lab
 
-## Getting Started
+**Learn system design by breaking it.** A puzzle game where every lesson is a level: read a short concept card, build an architecture on a live canvas with a fixed credit budget, run real traffic, spikes and server crashes through it, and earn up to three stars. Playable case studies (How Uber works, WhatsApp, Netflix, X/Twitter timelines) carry your design forward as the product grows.
 
-First, run the development server:
+## What is in the box
+
+- 18 lessons in 6 chapters (chapters 1-3 free, 4-6 Pro). Each opens on a full explanation page (how it works, request-path diagrams, numbers to know, comparisons, real-world examples, common mistakes, interview questions and a quiz), then the canvas challenge with a mission, three hints and a tested reference solution
+- Every case-study stage has the same kind of explanation page
+- Light and dark themes (follows the system setting, with a toggle in the header)
+- 4 playable case studies (Uber free; WhatsApp, Netflix, X/Twitter Pro), 4 more listed as coming soon
+- Daily challenge generated per day, with leaderboard and spoiler-free share text
+- Sandbox with editable traffic
+- Accounts, XP, ranks, streaks, 14 badges, all-time and daily leaderboards, profile
+- Pricing, test-mode checkout, Pro gating, Lemon Squeezy live checkout and signed webhooks
+- A deterministic simulation engine shared by browser and server, with plain-English post-mortems
+
+## Docs
+
+- [Market research](docs/01-market-research.md): competitors, their weaknesses, what learners say
+- [Product plan](docs/02-product-plan.md): mechanics, curriculum, monetisation, growth, roadmap
+- [Technical design](docs/03-technical-design.md): architecture, simulation model, data, security
+
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+cp .env.example .env.local   # then set BETTER_AUTH_SECRET
+pnpm dev                     # migrates the database, serves http://localhost:3100
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Test it
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm test        # unit tests: engine, every level's solvability and article, 120 days of dailies, server logic
+pnpm test:e2e    # Playwright: builds for production and drives every feature in Chromium
+pnpm typecheck
+pnpm lint
+pnpm levels:report   # utilisation report for content authors
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See the technical design for the local-disk setup this machine needs (the Projects drive is a slow FUSE mount).

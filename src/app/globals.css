@@ -1,26 +1,359 @@
 @import "tailwindcss";
+@import "@xyflow/react/dist/style.css";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Semantic colour tokens: one light and one dark set. Utilities (bg-paper, text-ink, ...) read these variables. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+  --paper: #fbfaf7;
+  --paper-2: #f3f1ec;
+  --paper-3: #e9e6df;
+  --card: #ffffff;
+  --ink: #15181e;
+  --ink-2: #363b46;
+  --ink-soft: #6b7280;
+  --line: #e6e3dc;
+  --cobalt: #3355e0;
+  --cobalt-soft: #eaeefd;
+  --signal: #ee5a1c;
+  --signal-soft: #fdeadf;
+  --ok: #15803d;
+  --warn: #b45309;
+  --bad: #dc2626;
+  --gold: #e0a100;
+  --night: #0e1a30;
+  --night-2: #15233f;
+  --night-line: #24365c;
+  --shadow: 0 1px 2px rgb(16 24 40 / 0.04), 0 8px 24px -12px rgb(16 24 40 / 0.14);
+  --canvas: #f3f2ee;
+  --canvas-dot: #d6d3cb;
+  --edge: #9ca3af;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0e1014;
+  --paper-2: #161920;
+  --paper-3: #1f232c;
+  --card: #14171d;
+  --ink: #eceef2;
+  --ink-2: #c6cad3;
+  --ink-soft: #8f97a5;
+  --line: #272c36;
+  --cobalt: #8098ff;
+  --cobalt-soft: #1b2344;
+  --signal: #ff7a3d;
+  --signal-soft: #3a2014;
+  --ok: #4ade80;
+  --warn: #fbbf24;
+  --bad: #f87171;
+  --gold: #fbbf24;
+  --night: #0b1224;
+  --night-2: #111b31;
+  --night-line: #1f2d4a;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  --canvas: #0b0c0f;
+  --canvas-dot: #23262d;
+  --edge: #5b6270;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-3: var(--paper-3);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-cobalt: var(--cobalt);
+  --color-cobalt-soft: var(--cobalt-soft);
+  --color-signal: var(--signal);
+  --color-signal-soft: var(--signal-soft);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+  --color-gold: var(--gold);
+  --color-night: var(--night);
+  --color-night-2: var(--night-2);
+  --color-night-line: var(--night-line);
+  --color-canvas: var(--canvas);
+
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-marker: var(--font-caveat), "Comic Sans MS", cursive;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--paper);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* Faint grid that fades out towards the bottom (hero backgrounds). */
+.paper-grid {
+  position: relative;
+  isolation: isolate;
+  background-color: var(--paper);
+}
+
+.paper-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--ink) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--ink) 5%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to bottom, black, transparent 70%);
+}
+
+/* The design surface: a plain sheet with a faint dot grid, in both themes. */
+.blueprint {
+  background-color: var(--canvas);
+  background-image: radial-gradient(var(--canvas-dot) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+.ink-shadow,
+.ink-shadow-sm {
+  box-shadow: var(--shadow);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.2) rotate(-20deg);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.25) rotate(6deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+.star-pop {
+  animation: pop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+.flow-dash {
+  stroke-dasharray: 6 6;
+  animation: dash 0.6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise,
+  .star-pop,
+  .flow-dash {
+    animation: none;
+  }
+}
+
+/* React Flow on the design surface. */
+.react-flow {
+  --xy-background-color: transparent;
+  --xy-background-pattern-color: var(--canvas-dot);
+}
+
+.react-flow__edge-path {
+  stroke-width: 1.75;
+}
+
+.react-flow__handle {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--card);
+  background: var(--edge);
+}
+
+.react-flow__handle:hover {
+  background: var(--signal);
+}
+
+.react-flow__controls {
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.react-flow__controls .react-flow__controls-button {
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-2);
+  fill: var(--ink-2);
+}
+
+.react-flow__controls .react-flow__controls-button:hover {
+  background: var(--paper-2);
+}
+
+.react-flow__attribution {
+  background: transparent;
+}
+
+.react-flow__attribution a {
+  color: var(--ink-soft);
+  opacity: 0.5;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-cobalt);
+  outline-offset: 2px;
+}
+
+/* Full-screen canvas pages hide the footer. */
+body:has([data-testid="playground"]) [data-site-footer],
+body:has([data-testid="playground-loading"]) [data-site-footer] {
+  display: none;
+}
+
+/* A request packet travelling along a walkthrough connector. */
+@keyframes packet {
+  from {
+    left: 0;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  to {
+    left: calc(100% - 8px);
+    opacity: 1;
+  }
+}
+
+.packet {
+  animation: packet 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .packet {
+    animation: none;
+    left: calc(100% - 8px);
+  }
+}
+
+/* ---------------------------------------------------------------- Editorial type system */
+
+/* Page and section titles share one display face; an orange accent marks the key words. */
+h1,
+.display {
+  font-family: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+h1 em,
+.display em {
+  font-style: normal;
+  color: var(--signal);
+}
+
+/* Handwritten margin notes, like an engineer marking up a whiteboard. */
+.marker {
+  font-family: var(--font-caveat), cursive;
+  font-weight: 700;
+  color: var(--signal);
+  letter-spacing: 0.01em;
+}
+
+/* Spec-sheet labels: "01 / HOW IT WORKS". */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--ink-soft);
+}
+
+/* Paper grain over the whole page (skipped on the canvas, which must stay crisp). */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+:root[data-theme="dark"] body::before {
+  opacity: 0.06;
+}
+
+body:has([data-testid="playground"])::before {
+  display: none;
+}
+
+/* Endless ticker of concepts under the hero. */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee {
+  animation: marquee 40s linear infinite;
+}
+
+/* Hand-drawn strokes draw themselves in once. */
+@keyframes draw {
+  from {
+    stroke-dashoffset: var(--len, 400);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.draw {
+  stroke-dasharray: var(--len, 400);
+  animation: draw 1.2s 0.6s cubic-bezier(0.6, 0, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee,
+  .draw {
+    animation: none;
+  }
 }
